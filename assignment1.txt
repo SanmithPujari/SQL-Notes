@@ -1,0 +1,58 @@
+create table EMPLOYEE(
+ENO int,
+ENAME varchar(20),
+JOB varchar(20),
+MGR int,
+HIREDATE date,
+SAL numeric,
+COMM numeric,
+DEPT varchar(20)
+);
+
+
+a) select * from EMPLOYEE;
+b) select ENAME,ENO from EMPLOYEE; 
+c) select ENAME,HIREDATE,SAL from EMPLOYEE;
+d) select ENAME,SAL+300 from EMPLOYEE;
+e) select ENAME,SAL*12+100 from EMPLOYEE;
+f) select ENAME,SAL from EMPLOYEE where COMM is NULL;
+g) select distinct(DEPT) from EMPLOYEE;
+h) select distinct(JOB) from EMPLOYEE;
+i) select ENAME,SAL from EMPLOYEE where SAL<COMM;
+j) select ENAME,SAL from EMPLOYEE where SAL between 3000 and 4000;
+k) select ENO,MGR from employee where ENO in(7902,7566,7788);
+l) select ENAME from EMPLOYEE where ENAME LIKE ('S%');
+m) select * from EMPLOYEE where SAL>4100;
+n) select * from EMPLOYEE order by HIREDATE asc;
+o) select * from EMPLOYEE order by DEPT asc, SAL desc;
+p) select ENAME,JOB from EMPLOYEE where HIREDATE between '1981-02-20' and '1981-05-1';
+q) select ENAME,DEPT from EMPLOYEE where DEPT in (20,30) order by ENAME asc;
+r) select ENAME,SAL from EMPLOYEE where SAL>1200 and DEPT in (10,40);
+s) select ENAME,HIREDATE from EMPLOYEE where HIREDATE like '1981%';
+t) select ENAME from employee where MGR is NULL;
+u) select ENAME,SAL from employee where COMM>0;
+   (  select ENAME,SAL from employee where COMM is not null;  /*if we do this then we get person with commission 0 aswell */)
+
+v) select ENAME from EMPLOYEE where ENAME like '_a%';
+w) select ENAME,JOB from EMPLOYEE where DEPT=20 and MGR=7788;
+
+x) i)Ashok Singhal	43500
+
+  ii) Martin S.
+	Kavita Sharma
+	Jaydeep Rana
+	Manoj Kaushik
+
+ iii) Kavita Sharma	NULL
+
+
+
+
+
+
+
+
+
+
+
+
