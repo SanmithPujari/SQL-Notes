@@ -1,0 +1,302 @@
+ASSESSMENT 2
+
+create table LMS_MEMBERS(
+MEMBER_ID varchar(10),
+MEMBER_NAME varchar(30),
+CITY varchar(20),
+DATE_REGISTER date,
+DATE_EXPIRE date,
+MEMBERSHIP_STATUS varchar(15),
+primary key (MEMBER_ID),
+)
+
+CREATE TABLE LMS_SUPPLIERS_DETAILS(
+SUPPLIER_ID VARCHAR(3),
+SUPPLIER_NAME VARCHAR(30),
+ADDRESS VARCHAR(50),
+CONTACT INT,
+EMAIL VARCHAR(15),
+PRIMARY KEY (SUPPLIER_ID)
+)
+
+CREATE TABLE LMS_FINE_DETAILS(
+FINE_RANGE VARCHAR(3),
+FINE_AMOUNT NUMERIC(10,2),
+PRIMARY KEY (FINE_RANGE)
+)
+
+CREATE TABLE LMS_BOOK_DETAILS(
+BOOK_CODE VARCHAR(10) PRIMARY KEY,
+BOOK_TITLE VARCHAR(50),
+CATEGORY VARCHAR(15),
+AUTHOR VARCHAR(30),
+PUBLICATION VARCHAR(30),
+PUBLISH_DATE DATE,
+BOOK_EDITION INT,
+PRICE NUMERIC(8,2),
+RACK_NUM VARCHAR(3),
+DATE_ARRIVAL DATE,
+SUPPLIER_ID VARCHAR(3),
+FOREIGN KEY (SUPPLIER_ID) REFERENCES 
+LMS_SUPPLIERS_DETAILS (SUPPLIER_ID) ON DELETE CASCADE
+)
+
+CREATE TABLE LMS_BOOK_ISSUE
+(
+BOOK_ISSUE_NO INT PRIMARY KEY,
+MEMBER_ID VARCHAR(10) REFERENCES LMS_MEMBERS(MEMBER_ID),
+BOOK_CODE VARCHAR(10),
+DATE_ISSUE DATE,
+DATE_RETURN DATE,
+DATE_RETURNED DATE,
+FINE_RANGE VARCHAR(3),
+foreign key (MEMBER_ID) REFERENCES 
+LMS_MEMBERS (MEMBER_ID) ON DELETE CASCADE,
+foreign key (BOOK_CODE) REFERENCES 
+LMS_BOOK_DETAILS (BOOK_CODE) ON DELETE CASCADE,
+foreign key (FINE_RANGE) REFERENCES 	
+LMS_FINE_DETAILS (FINE_RANGE) ON DELETE CASCADE
+)
+
+INSERT INTO LMS_MEMBERS VALUES('LM001','AMIT','CHENNAI',
+'2012-02-12','2013-02-11','Temporary'),
+('LM002','ABDHUL','DELHI',
+'2012-04-10','2013-04-09','Temporary'),
+('LM003','GAYAN','CHENNAI',
+'2012-05-13','2013-05-12','Permanent'),
+('LM004','RADHA','CHENNAI',
+'2012-04-22','2013-04-21','Temporary'),
+('LM005','GURU','BANGALORE',
+'2012-03-30','2013-05-11','Temporary'),
+('LM006','MOHAN','CHENNAI',
+'2012-04-12','2013-05-11','Temporary')
+
+SELECT * FROM LMS_MEMBERS;
+
+
+
+INSERT INTO LMS_SUPPLIERS_DETAILS VALUES
+('S01','SINGAPORE SHOPPEE','CHENNAI',98941235,
+'sing@gmail.com'),
+('S02','JK Stores','MUMBAI',99401234,
+'jks@yahoo.com'),
+('S03','ROSE BOOK STORE','TRIVANDRUM',94444112,
+'rose@gmail.com'),
+('S04','KAVARI STORE','DELHI',86300014,
+'kavi@redif.com'),
+('S05','EINSTEN BOOK GALLERY','US',95420000,
+'eingal@aol.com'),
+('S06','AKBAR STORE','MUMBAI',78556231,
+'akbakst@aol.com')
+
+SELECT * FROM LMS_SUPPLIERS_DETAILS;
+
+INSERT INTO LMS_FINE_DETAILS VALUES
+('R0',0.00),
+('R1',20.00),
+('R2',50.00),
+('R3',75.00),
+('R4',100.00),
+('R5',150.00),
+('R6',200.00)
+
+SELECT * FROM LMS_FINE_DETAILS;
+
+INSERT INTO LMS_BOOK_DETAILS VALUES
+('BL000010','Java ForvDummies','Java','Paul J.Deitel','Prentice Hall','1999-12-10',6,575.00,'A1','2011-05-10','S01'),
+('BL000002','Java:The Complete Reference','Java','Herbert Schildt','Tata Mcgraw Hill','2011-10-10',5,750.00,'A1','2011-05-10','S03'),
+('BL000003','Java How to Do Programm','Java','Paul J.Deitel','Prentice Hall','1999-05-10',6,600.00,'A1','2012-05-10','S01'),
+('BL000004','Java:The Complete Reference','Java','Herbert Schildt','Tata Mcgraw Hill','2011-10-10',5,750.00,'A1','2012-05-11','S01'),
+('BL000005','Java How to Do Programm','Java','Paul J.Deitel','Prentice Hall','1999-12-10',6,600.00,'A1','2012-05-11','S01'),
+('BL000006','Java:The Complete Reference','Java','Herbert Schildt','Tata Mcgraw Hill','2011-10-10',5,750.00,'A1','2012-05-12','S03'),
+('BL000007','Let Us C','C','Yashwant Kanetkar','BPB Publications','2010-12-11',9,500.00,'A3','2010-11-03','S03'),
+('BL000008','Let Us C','C','Yashwant Kanetkar','BPB Publications','2010-05-12',9,500.00,'A3','2011-08-09','S04'),
+('BL000009','Let Us C#','C','Yashwant Kanetkar','BPB Publications','2010-05-12',9,550.00,'A3','2011-08-09','S04'),
+('BL000011','Let Us C++','C','Yashwant Kanetkar','BPB Publications','2010-05-12',9,650.00,'A3','2011-08-09','S04')
+
+SELECT * FROM LMS_BOOK_DETAILS
+
+INSERT INTO LMS_BOOK_ISSUE VALUES
+(1,'LM001','BL000010','2012-05-01','2012-05-16','2012-05-16','R0'),
+(2,'LM002','BL000002','2012-05-01','2012-05-06','2012-05-16','R2'),
+(3,'LM003','BL000007','2012-04-01','2012-04-16','2012-04-20','R1'),
+(4,'LM004','BL000005','2012-04-01','2012-04-16','2012-04-20','R1'),
+(5,'LM005','BL000008','2012-03-30','2012-04-15','2012-04-20','R1'),
+(6,'LM005','BL000008','2012-04-20','2012-05-05','2012-05-05','R0'),
+(7,'LM003','BL000007','2012-04-22','2012-05-07','2012-05-25','R4')
+
+SELECT * FROM LMS_BOOK_ISSUE;
+
+(1) Write a command to describe the structure of the table, LMS_BOOK_DETAILS.
+EXEC SP_HELP LMS_BOOK_DETAILS;
+
+(2) Write a query to select all the columns of LMS_FINE_DEATILS.
+SELECT * FROM LMS_FINE_DETAILS;
+
+(3) Write a query to select the name of the members who are living in Chennai.
+SELECT MEMBER_NAME FROM LMS_MEMBERS WHERE CITY='CHENNAI'
+
+(4) Write a query to display the member id, member name, city and membership status of those members who are having life time membership.
+HINT: Life time membership status is Permanent.
+SELECT MEMBER_ID,MEMBER_NAME,CITY,MEMBERSHIP_STATUS
+FROM LMS_MEMBERS WHERE MEMBERSHIP_STATUS='Permanent'
+
+(5) Write a query to display the member id, member name who have taken the book with book code 'BL000002'.
+SELECT M.MEMBER_ID,MEMBER_NAME FROM LMS_MEMBERS M,LMS_BOOK_ISSUE B 
+WHERE M.MEMBER_ID=B.MEMBER_ID AND BOOK_CODE='BL000002'
+
+(6) Write a query to display the book code, book title and author 
+of the books whose author name begins with 'P'.
+SELECT BOOK_CODE,BOOK_TITLE,AUTHOR FROM LMS_BOOK_DETAILS 
+WHERE AUTHOR LIKE 'P%'
+
+(7) Write a query to display the total number of Java books available 
+in library with alias name ‘NO_OF_BOOKS’.
+SELECT COUNT(*) AS NO_OF_BOOKS FROM LMS_BOOK_DETAILS
+WHERE CATEGORY = 'JAVA'
+
+(8) Write a query to list the category and 
+number of books in each category with alias name ‘NO_OF_BOOKS’.
+SELECT CATEGORY,COUNT(CATEGORY) AS NO_OF_BOOKS FROM LMS_BOOK_DETAILS
+GROUP BY CATEGORY
+
+(12) Write a query to display the member id, member name, date of registration, 
+membership status of the members who registered before "March 2012" and membership status is "Temporary".
+SELECT COUNT(*) AS NO_OF_BOOKS FROM LMS_BOOK_DETAILS
+WHERE PUBLICATION = 'Prentice Hall'
+
+(10) Write a query to display the book code, book title of the books 
+which are issued on the date "1st April 2012"
+SELECT BOOK_CODE,BOOK_TITLE FROM LMS_BOOK_DETAILS WHERE BOOK_CODE IN
+(SELECT BOOK_CODE FROM LMS_BOOK_ISSUE WHERE DATE_ISSUE='2012-4-1')
+(OR)
+SELECT A.BOOK_CODE,BOOK_TITLE FROM LMS_BOOK_DETAILS A ,LMS_BOOK_ISSUE B
+WHERE A.BOOK_CODE=B.BOOK_CODE AND DATE_ISSUE = '2012-04-01'
+
+(11) Write a query to display the member id, member name, date of registration 
+and expiry date of the members whose membership expiry date is before APR 2013.
+SELECT MEMBER_ID,MEMBER_NAME,DATE_REGISTER,DATE_EXPIRE FROM
+LMS_MEMBERS WHERE DATE_EXPIRE<'2013-4-01'
+
+(12) Write a query to display the member id, member name, date of registration, 
+membership status of the members who registered before "March 2012" and membership status is "Temporary".
+SELECT MEMBER_ID,MEMBER_NAME,DATE_REGISTER,MEMBERSHIP_STATUS FROM
+LMS_MEMBERS WHERE DATE_REGISTER<'2012-3-01'
+AND MEMBERSHIP_STATUS='Temporary'
+
+(13) Write a query to display the member id, member name 
+who’s city is Chennai or Delhi.
+SELECT MEMBER_ID,MEMBER_NAME FROM LMS_MEMBERS WHERE 
+CITY IN ('CHENNAI','DELHI')
+
+(14) Write a query to concatenate book title, author and 
+display in the following format.Book_Title_is_written_by_Author
+SELECT BOOK_TITLE,'IS_WRITTEN_BY' AS IS_WRITTEN_BY,AUTHOR FROM LMS_BOOK_DETAILS;
+
+(15) Write a query to display the average price of books which is 
+belonging to ‘JAVA’ category with alias name “AVERAGEPRICE”.
+SELECT AVG(PRICE) AS AVERAGEPRICE FROM LMS_BOOK_DETAILS
+WHERE CATEGORY='JAVA'
+
+(16) Write a query to display the supplier id, supplier name and 
+email of the suppliers who are all having gmail account.
+SELECT SUPPLIER_ID,SUPPLIER_NAME,EMAIL FROM LMS_SUPPLIERS_DETAILS
+WHERE EMAIL LIKE '%gmail.com'
+
+(17) Write a query to display the supplier id, supplier name and 
+contact details. Contact details can be either phone number or email 
+or address with alias name “CONTACTDETAILS”. If phone number is null then 
+display email, if email is also null then display the address of the supplier. Hint: Use Coalesce function.
+SELECT SUPPLIER_ID,SUPPLIER_NAME,COALESCE(CONTACT,EMAIL,ADDRESS) 
+AS CONTACTDETAILS FROM LMS_SUPPLIERS_DETAILS
+
+(18) Write a query to display the member id, member name of the members, 
+book code and book title of the books taken by them.
+SELECT M.MEMBER_ID,MEMBER_NAME,B.BOOK_CODE,BOOK_TITLE FROM 
+LMS_MEMBERS M,LMS_BOOK_DETAILS B,LMS_BOOK_ISSUE BI WHERE
+M.MEMBER_ID=BI.MEMBER_ID AND B.BOOK_CODE=BI.BOOK_CODE
+
+(19) Write a query to display the member id, member name, fine range and 
+fine amount of the members whose fine amount is less than 100.
+SELECT M.MEMBER_ID,MEMBER_NAME,F.FINE_RANGE,FINE_AMOUNT FROM 
+LMS_MEMBERS M,LMS_FINE_DETAILS F,LMS_BOOK_ISSUE B WHERE
+M.MEMBER_ID=B.MEMBER_ID AND B.FINE_RANGE=F.FINE_RANGE AND
+FINE_AMOUNT<100;
+
+(20) Write a query to display the book code, book title and rack number of 
+the books which are placed in rack 'A1' and sort by book title in ascending order.
+SELECT BOOK_CODE,BOOK_TITLE,RACK_NUM FROM LMS_BOOK_DETAILS WHERE 
+RACK_NUM='A1' ORDER BY BOOK_TITLE
+
+(21) Write a query to display the member id, member name and date of registration
+who have not taken any book.
+SELECT MEMBER_ID,MEMBER_NAME,DATE_REGISTER 
+FROM LMS_MEMBERS WHERE MEMBER_ID NOT IN(
+SELECT MEMBER_ID FROM LMS_BOOK_ISSUE)
+
+(22) Write a query to display the member id and member name of the
+members who has not paid any fine in the year 2012.
+SELECT MEMBER_ID,MEMBER_NAME FROM LMS_MEMBERS
+WHERE MEMBER_ID NOT IN (SELECT MEMBER_ID 
+FROM LMS_BOOK_ISSUE A, LMS_FINE_DETAILS B 
+WHERE A.FINE_RANGE=B.FINE_RANGE AND YEAR(DATE_RETURNED)=2012 
+GROUP BY A.MEMBER_ID HAVING SUM(FINE_AMOUNT)>0 )
+
+(23) Write a query to display the rack number and the number of books
+in each rack with alias name “NOOFBOOKS” and sort by rack number in ascending order.
+SELECT RACK_NUM,COUNT(*) AS NOOFBOOKS FROM LMS_BOOK_DETAILS
+GROUP BY RACK_NUM ORDER BY RACK_NUM
+
+(24) Write a query to display book issue number, member name, date or 
+registration, date of expiry, book title, category author, price, date 
+of issue, date of return, actual returned date, issue status, fine amount.
+SELECT BOOK_ISSUE_NO,MEMBER_NAME,DATE_REGISTER,DATE_EXPIRE,
+BOOK_TITLE,CATEGORY,PRICE,DATE_ISSUE,DATE_RETURN,DATE_RETURNED,
+'ISSUED' AS BOOK_ISSUE_STATUS,FINE_AMOUNT
+FROM LMS_BOOK_ISSUE BI,LMS_MEMBERS M,LMS_BOOK_DETAILS B,LMS_FINE_DETAILS F
+WHERE M.MEMBER_ID=BI.MEMBER_ID AND B.BOOK_CODE=BI.BOOK_CODE
+AND F.FINE_RANGE=BI.FINE_RANGE
+
+(25) Write a query to display the member id, member name and number of 
+remaining books he/she can take with “REMAININGBOOKS” as alias name. 
+HINT: Assuming a member can take maximum 3 books.
+SELECT BI.MEMBER_ID,3-COUNT(BI.MEMBER_ID) AS REMAININGBOOKS 
+FROM LMS_BOOK_ISSUE BI,LMS_MEMBERS M WHERE M.MEMBER_ID=BI.MEMBER_ID
+GROUP BY(BI.MEMBER_ID)
+
+(26) Write a query to display only the first three records of 
+LMS_SUPPLIERS_DETAILS table.
+SELECT TOP 3 * FROM LMS_SUPPLIERS_DETAILS
+
+(27) Write a query to display the records of all suppliers excluding
+the first three suppliers.
+SELECT * FROM LMS_SUPPLIERS_DETAILS
+WHERE SUPPLIER_ID NOT IN (SELECT  TOP 3 SUPPLIER_ID FROM LMS_SUPPLIERS_DETAILS)
+
+(28) Write a query to rename the table LMS_MEMBERS to LMS_MEMBERS_DETAILS.
+EXEC SP_RENAME 'LMS_MEMBERS' , 'LMS_MEMBERS_DETAILS'
+
+(29) Write a query to delete all the rows of the table LMS_FINE_DETAILS. 
+[Without DELETE command]
+
+ALTER TABLE LMS_BOOK_ISSUE
+ADD CONSTRAINT FK_FR
+FOREIGN KEY (FINE_RANGE) REFERENCES LMS_FINE_DETAILS(FINE_RANGE);
+
+BEGIN TRANSACTION
+ALTER TABLE LMS_BOOK_ISSUE DROP CONSTRAINT FK_FR;
+
+BEGIN TRANSACTION
+TRUNCATE TABLE LMS_FINE_DETAILS
+
+SELECT * FROM LMS_FINE_DETAILS
+
+(30) Write a query to select all the name of the books. 
+[Without Asterisk (*) Operator]
+SELECT BOOK_TITLE FROM LMS_BOOK_DETAILS;
+
+begin transaction
+delete from LMS_FINE_DETAILS where FINE_RANGE='R0'
+
+ROLLBACK
+
