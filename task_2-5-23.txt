@@ -1,0 +1,206 @@
+scalar functions
+
+select * from EMPLOYEETB;
+select * from DEPARTMENT;
+
+1)Total number
+CREATE FUNCTION fn_totalEmployee()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT COUNT(*) FROM EMPLOYEETB);
+END;
+
+SELECT dbo.fn_totalEmployee();
+
+2)count of employees with Salary greater than 5000
+CREATE FUNCTION fn_salaryGreaterThanFiveThousand()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT COUNT(*) FROM EMPLOYEETB where sal>5000);
+END;
+
+SELECT DBO.fn_salaryGreaterThanFiveThousand()
+
+3)count of employees with Salary greater than integer
+CREATE FUNCTION fn_salaryGreaterThan(@MIN_SALARY INTEGER)
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT COUNT(*) FROM EMPLOYEETB WHERE SAL>@MIN_SALARY)
+END;
+
+SELECT DBO.FN_salaryGreaterThan(6000)
+
+4)select max salary
+CREATE FUNCTION fn_maxSalary()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT MAX(sal) FROM EMPLOYEETB)
+END;
+
+select dbo.fn_maxSalary()
+
+5)select avg salary
+CREATE FUNCTION fn_avgSalary()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT AVG(sal) FROM EMPLOYEETB)
+END;
+
+select dbo.fn_avgSalary()
+
+6)select count from any department
+CREATE FUNCTION fn_deptCount(@deptno integer)
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT count(*) FROM EMPLOYEETB where departmentno=@deptno)
+END;
+
+select dbo.fn_deptCount(10);
+
+7)select lowest salary
+CREATE FUNCTION fn_minSalary()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT MIN(sal) FROM EMPLOYEETB)
+END;
+
+select dbo.fn_minSalary();
+
+8)sum of salaries
+CREATE FUNCTION fn_sumSalary()
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT SUM(sal) FROM EMPLOYEETB)
+END;
+
+select dbo.fn_sumSalary();
+
+9)sum of salaries from particular department
+CREATE FUNCTION fn_sumSalaryOnDepart(@deptno int)
+RETURNS INTEGER
+AS
+BEGIN
+RETURN (SELECT SUM(sal) FROM EMPLOYEETB where departmentno=@deptno)
+END;
+
+select dbo.fn_sumSalaryOnDepart(10);
+
+10)
+CREATE FUNCTION getLocation(@empno int)
+RETURNS VARCHAR(20)
+AS
+BEGIN
+RETURN (SELECT LOC FROM department d,EMPLOYEEtb e where e.departmentno=d.deptno and eno=@empno )
+END
+
+SELECT dbo.getLocation(7369)
+
+
+select * from EMPLOYEETB;
+select * from DEPARTMENT;
+
+Inline table values function
+1)Display all details
+CREATE FUNCTION fn_empDetails()
+RETURNS TABLE
+AS
+RETURN(SELECT * FROM EMPLOYEETB)
+
+select * from employeetb as emp,department d 
+where emp.departmentno=d.deptno;
+
+select * from fn_empDetails() as emp,department d 
+where emp.departmentno=d.deptno;
+
+select eno,ename,emp.departmentno,dname from fn_empDetails() as emp,department d 
+where emp.departmentno=d.deptno;
+
+
+2)display all details of employees whos salary is greater than 4000
+CREATE FUNCTION fn_empDetailsOnSalary()
+RETURNS TABLE
+AS
+RETURN(SELECT * FROM EMPLOYEETB where sal>4000)
+
+select * from fn_empDetailsOnSalary();
+
+3)salary based on int
+CREATE FUNCTION fn_empDetailsOnSalary2(@sal int)
+RETURNS TABLE
+AS
+RETURN(SELECT * FROM EMPLOYEETB where sal>@sal)
+
+select * from fn_empDetailsOnSalary2(6000);
+
+4)return all employees department name
+CREATE FUNCTION fn_departmentNames()
+RETURNS TABLE
+AS
+RETURN(select eno,ename,e.departmentno,dName 
+from EMPLOYEETB e JOIN department d
+on e.departmentno=d.deptno)
+
+select * from fn_departmentNames();
+
+
+5)particular department
+CREATE FUNCTION fn_particularDept(@deptno int)
+RETURNS TABLE
+AS
+RETURN(select eno,ename,e.departmentno,dName 
+from EMPLOYEETB e JOIN department d
+on e.departmentno=d.deptno and e.departmentno=@deptno)
+
+select * from fn_particularDept(10);
+
+6)get location of department
+CREATE FUNCTION getDeptLocation(@deptno int)
+RETURNS TABLE
+AS
+RETURN (SELECT dname,LOC FROM department where deptno=@deptno )
+
+select * from getDeptLocation(10);
+
+7)get all employee details who have salary greater than avg salary
+CREATE FUNCTION fn_salaryGreaterThanAvg()
+RETURNS TABLE
+AS
+RETURN (SELECT * FROM EMPLOYEETB where sal>(select AVG(sal) from EMPLOYEETB) )
+
+select * from fn_salaryGreaterThanAvg();
+
+8)show all employees who have max salary in their department
+CREATE FUNCTION fn_maxSalaryOnDept()
+RETURNS TABLE
+AS
+RETURN (SELECT * FROM EMPLOYEETB where sal in(select MAX(sal) from EMPLOYEETB group by departmentno))
+
+
+select * from fn_maxSalaryOnDept();
+
+9)return employee details working in bangalore
+CREATE FUNCTION fn_detailsBasedOnCity(@deptname varchar(20))
+RETURNS TABLE
+AS
+RETURN(select eno,ename,e.departmentno,dName,loc 
+from EMPLOYEETB e JOIN department d
+on e.departmentno=d.deptno and loc=@deptname)
+
+select * from fn_detailsBasedOnCity('New Delhi')
+
+10)display all departments which donot have employees
+CREATE FUNCTION fn_departmentWithNoEmployees()
+RETURNS TABLE
+AS
+RETURN(select * from DEPARTMENT where deptno not in(
+select departmentno from employeetb))
+
+select * from fn_departmentWithNoEmployees()
