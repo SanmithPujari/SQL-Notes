@@ -435,7 +435,7 @@ drop table tbl_confirmationTrigger
 select * from tbl_confirmationTrigger
 
 --Trigger to update in customerTriggerAudit on insertion
-alter TRIGGER tr_tbl_users_ForInsert
+create TRIGGER tr_tbl_users_ForInsert
 ON tbl_users
 FOR INSERT
 AS
@@ -469,7 +469,7 @@ select * from tbl_customerTriggerAudit;
 
 
 --Trigger to update tbl_emailTrigger on insertion
-alter TRIGGER tr_tbl_users_email_ForInsert
+create TRIGGER tr_tbl_users_email_ForInsert
 ON tbl_users
 FOR INSERT
 AS
@@ -554,12 +554,14 @@ delete from #temptable where u_id=@user_id
 end
 end
 
+update tbl_users set last_name='Kotian' where u_id='user_001' 
+
 update tbl_users set last_name='Kotian' where u_id in ('user_001','user_002')
 
 select * from tbl_users
 
 --DDL trigger for showing changes in database
-alter TRIGGER tr_audit_table_change
+CREATE TRIGGER tr_audit_table_change
 ON DATABASE
 --ON ALL SERVER
 FOR CREATE_TABLE,ALTER_TABLE,DROP_TABLE
@@ -568,9 +570,10 @@ BEGIN
 SELECT EVENTDATA();
 END
 
---DROP TRIGGER tr_audit_table_change ON busBooking;
+drop trigger tr_audit_table_change on DATABASE
 
-drop trigger tr_AuditTableChange on all server
+
+--drop trigger tr_audit_table_change on all server
 
 DROP TABLE tbl_drivers
 
@@ -582,6 +585,8 @@ bus_id varchar(10)
 
 
 --DDL trigger showing change details
+drop table tbl_auditTableChanges
+
 create table tbl_auditTableChanges(
 databaseName VARCHAR(20),
 table_name varchar(20),
@@ -591,8 +596,8 @@ sql_command varchar(1000),
 audit_date_time datetime
 )
 
-alter trigger tr_audit_table_changes_with_details
-on all server
+create trigger tr_audit_table_changes_with_details
+on DATABASE
 for create_table,alter_table,drop_table
 as
 BEGIN
@@ -610,6 +615,11 @@ event_type,login_name,sql_command,audit_date_time) values
 GETDATE()
 )
 END
+
+drop trigger tr_audit_table_changes_with_details on DATABASE
+
+alter table tbl_auditTableChanges
+alter column sql_command varchar(1000)
 
 select * from tbl_auditTableChanges
 
@@ -742,3 +752,49 @@ select * from tbl_payments
 select* from tbl_seats
 
 uspBusSeatBooking 'user_075','bus_005',30
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Excel to SQl
+
+drop table tbl_driver
+
+create table tbl_driver
+(
+driver_id tinyint PRIMARY KEY,
+driver_name varchar(30) NOT NULL,
+bus_id varchar(10) NOT NULL,
+FOREIGN KEY (bus_id) REFERENCES tbl_buses(bus_id)
+)
+
+select * from tbl_driver
+drop table tbl_driver
+
+
+--SQL to Excel
+/*tbl_user has been saved in SQLtoExcel file*/
+
+
+--CSV to SQL
+create table tbl_conductor
+(
+conductor_id tinyint PRIMARY KEY,
+conductor_name varchar(30) NOT NULL,
+bus_id varchar(10) NOT NULL,
+FOREIGN KEY (bus_id) REFERENCES tbl_buses(bus_id)
+)
+
+select * from tbl_conductor
+
+--SQL to CSV
