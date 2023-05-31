@@ -1,0 +1,128 @@
+--can temporary variables used inside funtions?
+--yes!
+CREATE FUNCTION fn_sample()
+RETURNS INT
+AS
+BEGIN
+    DECLARE @TempVariable INT
+    SET @TempVariable = 10
+    RETURN @TempVariable * 2
+END
+
+select dbo.fn_sample()
+
+--can we call a function inside stored procedure?
+--yes!
+create PROC usp_sample
+@variable int OUTPUT
+as 
+begin
+	set @variable=dbo.fn_sample()
+end
+
+DECLARE @variable INT
+EXECUTE usp_sample @variable OUT
+PRINT @variable
+
+--can we call a sp inside function?
+--no!
+create proc usp_sample_2
+@variable int OUTPUT
+as 
+begin
+	set @variable=20
+end
+
+DECLARE @variable INT
+EXECUTE usp_sample_2 @variable OUT
+PRINT @variable
+
+
+alter FUNCTION fn_sample2()
+RETURNS INT
+AS
+BEGIN
+    DECLARE @TempVariable INT
+    SET @TempVariable = dbo.usp_sample_2
+    RETURN @TempVariable
+END
+
+select dbo.fn_sample2()
+
+--can we call trigger inside a sp?
+--no!
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    CustomerName VARCHAR(50),
+    TotalPurchase DECIMAL(10, 2)
+);
+
+CREATE TRIGGER UpdateTotalPurchaseTrigger
+ON Customers
+AFTER INSERT
+AS
+BEGIN
+    UPDATE C
+    SET C.TotalPurchase = C.TotalPurchase + 1000 
+    FROM Customers C JOIN inserted ON C.CustomerID = inserted.CustomerID;
+END;
+
+
+alter PROCEDURE InsertCustomerWithTrigger
+    @CustomerID INT,
+    @CustomerName VARCHAR(50),
+    @TotalPurchase DECIMAL(10, 2)
+AS
+BEGIN
+    INSERT INTO Customers VALUES (@CustomerID, @CustomerName, @TotalPurchase);
+ 
+    EXEC UpdateTotalPurchaseTrigger;
+END;
+
+EXEC InsertCustomerWithTrigger @CustomerID = 4, @CustomerName = 'Phill Foden', @TotalPurchase = 3000.00;
+
+select * from customers
+
+--join table valued function with a table
+select * from employee
+
+create FUNCTION fn_empDetails()
+RETURNS TABLE
+AS
+RETURN(SELECT * FROM EMPLOYEE)
+
+select * from DEPARTMENT
+
+
+select empno,ename,job,d.deptno,dname from fn_empDetails() e join department d on e.deptno=d.deptno
+
+--join table valued function(with input parameters) with a table
+create FUNCTION fn_emp_details(@emp varchar(20))
+RETURNS TABLE
+AS
+RETURN(SELECT * FROM EMPLOYEE where empno=@emp)
+
+select empno,ename,job,d.deptno,dname from fn_emp_details('8100') e join department d on e.deptno=d.deptno
+
+--Instead of triggers for tables
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE
+);
+
+CREATE TRIGGER InsteadOfInsertTrigger
+ON Orders
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO Orders (OrderID, CustomerID, OrderDate)
+    SELECT OrderID, CustomerID, GETDATE()
+    FROM inserted;
+END;
+
+
+select * from orders
+
+INSERT INTO Orders (OrderID, CustomerID) VALUES (2, 200);
